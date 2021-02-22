@@ -13,4 +13,8 @@ class Card
   def to_s
     @name + @suit
   end
+
+  def ace?
+    @name == 'T'
+  end
 end

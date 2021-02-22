@@ -7,7 +7,7 @@ class TerminalInterface
   def start_game
     loop do
       puts LINE1
-      puts "===============  Новый раунд"
+      puts "Новый раунд"
       @game.turn_new_init
       loop do
         show_table

@@ -1,6 +1,7 @@
 class Player
   MAX_SCORE = 21
   NAME_FORMAT = /^[a-zа-я ]+$/i.freeze
+  MAX_CARDS = 3
 
   attr_writer :type
   attr_reader :money, :type_default
@@ -13,12 +14,8 @@ class Player
   end
 
   def max_cards?
-    true if @hand.count == 3
+    true if @hand.count == MAX_CARDS
   end
-
-  # def allowed_add_card?
-  #   true if @hand.count == 2
-  # end
 
   def overscore?
     calc_hand > MAX_SCORE
@@ -32,7 +29,7 @@ class Player
   end
 
   def give_card(deck)
-    @hand << deck.deck.take_card if @hand.count < 3
+    @hand << deck.take_card if !max_cards?
   end
 
   def clear_hand
@@ -50,12 +47,9 @@ class Player
   end
 
   def calc_hand
-    score = 0
-    #первый цикл для того, чтобы подсчитать руку из предположения что Туз = 1
-    @hand.each { |card| score += card.cost }
-    #второй цикл - если есть туз, то смотрим, можно ли добавить за него 10.
+    score = @hand.sum(&:cost)
     @hand.each do |card|
-      score += 10 if card.name == 'Т' && (score + 10 <= MAX_SCORE)
+      score -= 10 if card.ace? && (score > MAX_SCORE)
     end
     score
   end

@@ -51,11 +51,11 @@ class Game
       @slave.change_money @bank / 2
       @master.change_money @bank / 2
       return nil
-      elsif master_overscore? || (master_score < slave_score && !slave_overscore?)
-        @slave.change_money @bank
-        return @slave
-      else
-        @master.change_money @bank
+    elsif master_overscore? || (master_score < slave_score && !slave_overscore?)
+      @slave.change_money @bank
+      return @slave
+    else
+      @master.change_money @bank
       return @master
     end
     @bank = 0
