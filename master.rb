@@ -1,2 +1,2 @@
-class Master << Player
-end
+# class Master << Player
+# end

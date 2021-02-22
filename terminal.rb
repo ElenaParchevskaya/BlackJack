@@ -27,12 +27,13 @@ class TerminalInterface
 
   def turn_end
     puts LINE2
-    puts "Текущий раунд закончился"
+    puts 'Текущий раунд закончился'
     show_table(true)
-    case @game.turn_end
-    when 1 then puts "Ничья\n\n\n"
-    when 2 then puts "Вы выиграли!\n\n\n"
-    when 3 then puts "Вы проиграли!\n\n\n"
+    winner = @game.turn_end
+    if winner.nil?
+      puts "Ничья\n\n\n"
+    else
+      puts "Выиграл #{winner}\n\n\n"
     end
   end
 
@@ -64,10 +65,10 @@ class TerminalInterface
     puts e.backtrace
   end
 
-  def continue_game
+  def break_game
     puts ''
     puts 'Введите 1 для того, чтобы начать еще раз'
-    gets.chomp.to_i == 1
+    gets.chomp.to_i != 1
   end
 
   def input_name
@@ -83,7 +84,7 @@ class TerminalInterface
     puts "Стол\n"
     puts "Банк #{@game.bank}"
     @game.players.each do |p|
-      puts "Игрок #{p.to_s}, карты на руках #{p.print_cards}, сумма карт #{p.show_score}, деньги на руках #{p.money}"
+      puts "Игрок #{p}, карты на руках #{p.print_cards}, сумма карт #{p.show_score}, деньги на руках #{p.money}"
     end
     puts
   end

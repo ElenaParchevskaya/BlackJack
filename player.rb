@@ -16,9 +16,9 @@ class Player
     true if @hand.count == 3
   end
 
-  def allowed_add_card?
-    true if @hand.count == 2
-  end
+  # def allowed_add_card?
+  #   true if @hand.count == 2
+  # end
 
   def overscore?
     calc_hand > MAX_SCORE
@@ -32,7 +32,7 @@ class Player
   end
 
   def give_card(deck)
-    @hand << deck.deck.pop if @hand.count < 3
+    @hand << deck.deck.take_card if @hand.count < 3
   end
 
   def clear_hand
@@ -51,9 +51,11 @@ class Player
 
   def calc_hand
     score = 0
+    #первый цикл для того, чтобы подсчитать руку из предположения что Туз = 1
     @hand.each { |card| score += card.cost }
+    #второй цикл - если есть туз, то смотрим, можно ли добавить за него 10.
     @hand.each do |card|
-      score += card.cost1 if card.cost1 > 0 && (score + card.cost1 <= MAX_SCORE)
+      score += 10 if card.name == 'Т' && (score + 10 <= MAX_SCORE)
     end
     score
   end

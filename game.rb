@@ -26,11 +26,11 @@ class Game
   end
 
   def slave_add_card?
-    @slave.allowed_add_card?
+    !@slave.max_cards?
   end
 
   def turn_master
-    if @master.calc_hand < 17 && @master.allowed_add_card?
+    if @master.calc_hand < 17 && !@master.max_cards?
       @master.give_card @deck
       true
     end
@@ -50,13 +50,13 @@ class Game
     if master_score == slave_score
       @slave.change_money @bank / 2
       @master.change_money @bank / 2
-      return 1
+      return nil
       elsif master_overscore? || (master_score < slave_score && !slave_overscore?)
         @slave.change_money @bank
-        return 2
+        return @slave
       else
         @master.change_money @bank
-      return 3
+      return @master
     end
     @bank = 0
   end

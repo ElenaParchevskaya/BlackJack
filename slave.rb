@@ -1,2 +1,2 @@
-class Slave << Player
-end
+# class Slave << Player
+# end
