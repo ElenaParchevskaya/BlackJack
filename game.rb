@@ -1,51 +1,81 @@
 class Game
   STAKE = 10
 
-  def main_menu
-    print "Как вас называть? :"
-    name = gets.chomp
+  attr_reader :bank, :master, :slave, :players
+
+  def initialize(name)
     @slave = Player.new(name, :showed)
     @master = Player.new('Крупье', :hidden)
     @players = [@master, @slave]
-    new_game
-  rescue StandardError => e
-    puts "Возникла ошибка #{e.message}. Игра не началась."
-    puts e.backtrace
+  end
+
+  def turn_new_init
+    @deck = Deck.new
+    @players.each(&:clear_hand)
+    2.times do
+      @players.each { |p| p.give_card @deck }
+    end
+    @bank = 0
+    @players.each do |p|
+      @bank += p.change_money -STAKE
+    end
+  end
+
+  def turn_slave
+    slave_add_card
+  end
+
+  def slave_add_card?
+    @slave.allowed_add_card?
+  end
+
+  def turn_master
+    if @master.calc_hand < 17 && @master.allowed_add_card?
+      @master.give_card @deck
+      true
+    end
+  end
+
+  def turn_stop?
+    max_cards? || master_overscore? || slave_overscore?
+  end
+
+  def change_master_view
+    @master.type = :showed
+  end
+
+  def turn_end
+    master_score = @master.calc_hand
+    slave_score = @slave.calc_hand
+    if master_score == slave_score
+      @slave.change_money @bank / 2
+      @master.change_money @bank / 2
+      return 1
+      elsif master_overscore? || (master_score < slave_score && !slave_overscore?)
+        @slave.change_money @bank
+        return 2
+      else
+        @master.change_money @bank
+      return 3
+    end
+    @bank = 0
+  end
+
+  def master_overscore?
+    @master.overscore?
+  end
+
+  def slave_overscore?
+    @slave.overscore?
   end
 
   private
 
-  def game_over(name)
-    puts "У #{name} нет денег на новую игру. Игра закончилась."
+  def slave_add_card
+    @slave.give_card @deck
   end
 
-  def show_table
-    puts "=====+++ Стол +++====="
-    puts "Банк #{@bank}"
-    @players.each do |p|
-      puts "Игрок #{p.to_s}, карты на руках #{p.print_cards}, деньги на руках #{p.money}"
-    end
-    puts "Сумма моих карт #{@slave.calc_hand}"
-  end
-
-  def new_game
-    @deck = Deck.new
-    @players.each( &:clear_hand )
-    2.times do
-      @players.each { |p| p.give_card @deck.deck.pop }
-    end
-
-    @bank = 0
-    @players.each do |p|
-      @bank += p.change_money - STAKE
-    end
-
-    show_table
-    next_turn_menu
-  rescue RuntimeError => e
-     game_over e.message
-  end
-
-  def next_turn_menu
+  def max_cards?
+    @slave.max_cards? && @master.max_cards?
   end
 end
