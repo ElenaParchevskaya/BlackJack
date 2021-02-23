@@ -1,2 +1,0 @@
-# class Master << Player
-# end
