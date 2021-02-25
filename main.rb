@@ -3,6 +3,7 @@ require_relative 'deck.rb'
 require_relative 'player.rb'
 require_relative 'game.rb'
 require_relative 'terminal.rb'
+require_relative 'hand.rb'
 
 class BlackJack
   def initialize
@@ -12,7 +13,6 @@ class BlackJack
       game = Game.new(name)
       term.game = game
       term.start_game
-      break if term.break_game
     end
   rescue StandardError => e
     term.show_error(e)

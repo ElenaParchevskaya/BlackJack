@@ -1,7 +1,4 @@
-require_relative 'hand.rb'
-
 class TerminalInterface
-
   attr_accessor :game
 
   def start_game
