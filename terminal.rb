@@ -1,13 +1,12 @@
+require_relative 'hand.rb'
+
 class TerminalInterface
-  LINE1 = "----------------------------------------------------"
-  LINE2 = "===================================================="
 
   attr_accessor :game
 
   def start_game
     loop do
-      puts LINE1
-      puts "Новый раунд"
+      distribution_of_cards
       @game.turn_new_init
       loop do
         show_table
@@ -26,22 +25,22 @@ class TerminalInterface
   end
 
   def turn_end
-    puts LINE2
-    puts 'Текущий раунд закончился'
-    show_table(true)
     winner = @game.turn_end
     if winner.nil?
-      puts "Ничья\n\n\n"
+      puts "Ничья\n"
     else
-      puts "Выиграл #{winner}\n\n\n"
+      puts "Выиграл #{winner}\n"
+
     end
+    return if ask_one_more? == 1
+    exit
   end
 
   def slave
-    puts '1 - если хотите пропустить ход'
-    puts '2 - если хотите добавить карту' if @game.slave_add_card?
-    puts '3 - если хотите открыть карты'
-    print 'Ваш ход : '
+    puts "\nТвой ход!"
+    puts '1 - пропустить ход'
+    puts '2 - добавить карту' if @game.slave_add_card?
+    puts '3 - открыть карты'
     case gets.chomp.to_i
     when 2
       @game.turn_slave
@@ -65,14 +64,8 @@ class TerminalInterface
     puts e.backtrace
   end
 
-  def break_game
-    puts ''
-    puts 'Введите 1 для того, чтобы начать еще раз'
-    gets.chomp.to_i != 1
-  end
-
   def input_name
-    puts 'Как вас называть? :'
+    puts "\nКак вас называть? :"
     gets.chomp
   end
 
@@ -80,18 +73,35 @@ class TerminalInterface
 
   def show_table(change_master = false)
     @game.change_master_view if change_master
-    puts LINE2
-    puts "Стол\n"
-    puts "Банк #{@game.bank}"
+    puts "\n\n\nБанк #{@game.bank}"
     @game.players.each do |p|
-      puts "Игрок #{p}, карты на руках #{p.print_cards}, сумма карт #{p.show_score}, деньги на руках #{p.money}"
+      puts "#{p} - #{p.print_cards}, #{p.show_score} очков,   ( #{p.money} $)"
     end
     puts
   end
 
+  def distribution_of_cards
+    processing("\nРаздача карт")
+  end
+
+  def processing(sign)
+    print sign
+    20.times do
+      print '.'
+      sleep 0.1
+    end
+    puts
+    puts
+  end
+
+  def ask_one_more?
+    puts "\nСыграем еще?"
+    puts '1 - Да'
+    puts '2 - Нет'
+    gets.chomp.to_i
+  end
+
   def game_over(name)
-    puts LINE2
-    puts "У #{name} закончились деньги. Гейм овеееер."
-    puts LINE2
+    puts "\nУ #{name} закончились деньги. Гейм овеееер."
   end
 end
