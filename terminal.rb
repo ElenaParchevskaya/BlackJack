@@ -66,6 +66,15 @@ class TerminalInterface
     gets.chomp
   end
 
+  def print_cards(hand, type)
+    str = ''
+    @hand.each do |card|
+      card_symbol = @type == :showed ? card.to_s : '**'
+      str += "#{card_symbol} "
+    end
+    str
+  end
+
   private
 
   def show_table(change_master = false)

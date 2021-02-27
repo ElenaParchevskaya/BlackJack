@@ -5,9 +5,9 @@ class Player
   attr_reader :money, :type_default
 
   def initialize(name, type)
-   	@name = name
+    @name = name
     @money = 100
-    @@type_default = type
+    @type_default = type
     validate!
   end
 
@@ -25,7 +25,7 @@ class Player
   private
 
   def validate!
-   raise 'Имя слишком короткое!' if @name.length < 1
-   raise 'Имя некорректное, можно только буквы и пробелы' if @name !~ NAME_FORMAT
+    raise "Имя слишком короткое!" if @name.length < 2
+    raise "Имя некорректное, можно только буквы и пробелы" if @name !~ NAME_FORMAT
   end
 end
